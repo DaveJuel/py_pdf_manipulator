@@ -1,0 +1,31 @@
+from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
+
+s1.pdf
+	50pages
+move 2-6
+addafter 5page in tg.pdf
+
+
+s2.pdf
+	40pgs
+copy 3-8
+addafter 8page in tg.pdf
+
+
+tg.pdf
+	10pgs
+
+
+after processing 
+
+	s1.pdf 
+			pages from 1-2 and 7-50 total = 45pages
+	tg.pdf 
+			pages 1-15 
+
+	s2.pdf 
+			remain as it is
+
+	tg.pdf 
+			pages 1-21 total reaches 21 pages
+
