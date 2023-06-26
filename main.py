@@ -1,44 +1,52 @@
 from PyPDF2 import PdfReader, PdfWriter
 
 
-def generate_source_files(sample_pdf, destination_pdf, start_page, end_page):
-    source_pdf = PdfReader(sample_pdf)
-    destination_pdf = PdfWriter(destination_pdf)
-    destination_pages = []
-
-    # Extract the desired pages from the source PDF
+def extract_desired_page(source_pdf, start_page, end_page):
+    pages = []
     for page_number in range(start_page, end_page):
         source_page = source_pdf.pages[page_number]
-        destination_pages.append(source_page)
+        pages.append(source_page)
+    return pages
 
-    # Add the extracted pages to the end of the destination PDF
+
+def copy_pages(source_pdf, destination_pdf, start_page, end_page):
+    destination_pages = extract_desired_page(
+        PdfReader(source_pdf), start_page, end_page)
+    destination_pdf = PdfWriter(destination_pdf)
     for page in destination_pages:
         destination_pdf.add_page(page)
-
     with open(destination_pdf.fileobj, 'wb') as output_file:
         destination_pdf.write(output_file)
 
 
-def copy_pages_at_start(source_file, destination_file, page_to_copy):
-    source_pdf = PdfReader(source_file)
-    destination_pdf = PdfReader(destination_file)
-    source_page = source_pdf.getPage(page_to_copy)
+def merge_files(source_file, target_file, source_file_range, target_file_range, merge_at_page):
+    source_file_pages = extract_desired_page(
+        PdfReader(source_file), source_file_range[0], source_file_range[1])
+    target_file_pages = extract_desired_page(
+        PdfReader(target_file), target_file_range[0], target_file_range[1])
+    target_file_writer = PdfWriter(target_file);    
+    for index, target_page in enumerate(target_file_pages):
+        if index == merge_at_page: 
+            for source_page in source_file_pages:
+                target_file_writer.add_page(source_page)
+        else:
+            target_file_writer.add_page(target_page)
+    with open(target_file_writer.fileobj, 'wb') as output_file:
+        target_file_writer.write(output_file)
 
-    # Shift existing pages in the destination PDF to make room for the new page
-    for i in range(destination_pdf.getNumPages()):
-        destination_pdf.insertPage(destination_pdf.getPage(i), i)
 
-    # Add the source page at the beginning of the destination PDF
-    destination_pdf.insertPage(source_page, 0)
+def initialise_files():
+    # generate tg with 10 pgs
+    copy_pages('gulliverstravels00swif.pdf',
+               'destination_files/tg.pdf', 14, 24)
 
-    with open('output_file.pdf', 'wb') as output_file:
-        destination_pdf.write(output_file)
+    # generate s1 with 50 pgs
+    copy_pages('gulliverstravels00swif.pdf',
+               'source_files/s1.pdf', 14, 64)
 
-
-def copy_pages_at_end(source_file, destination_file, pages_to_copy):
-    # TODO: Add implimentation
-    return 0
-
+    # generate s2 with 40 pgs
+    copy_pages('gulliverstravels00swif.pdf',
+               'source_files/s2.pdf', 14, 54)
 
 def copy_pages_in_middle(source_file, destination_file, pages_to_copy):
     # TODO: Add implimentation
@@ -46,12 +54,9 @@ def copy_pages_in_middle(source_file, destination_file, pages_to_copy):
 
 
 def run_app():
-    # generate source file 1 with 50 pgs
-    generate_source_files('gulliverstravels00swif.pdf',
-                          'source_files/source_1.pdf', 14, 64)
-    # generate source file 2 with 40 pgs
-    generate_source_files('gulliverstravels00swif.pdf',
-                          'source_files/source_2.pdf', 14, 54)
+    initialise_files()
+    merge_files('source_files/s1.pdf',
+                'destination_files/tg.pdf', [2, 6], [1, 10], 5)
 
 
 run_app()

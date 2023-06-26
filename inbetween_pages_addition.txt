@@ -1,14 +1,17 @@
 from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
 
+tg.pdf 
+	10 pages
+
 s1.pdf
 	50pages
-move 2-6
+move 2-6 (5 pages)
 addafter 5page in tg.pdf
 
 
 s2.pdf
 	40pgs
-copy 3-8
+copy 3-8 (6 pages)
 addafter 8page in tg.pdf
 
 
