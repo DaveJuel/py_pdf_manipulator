@@ -21,16 +21,16 @@ def copy_pages(source_pdf, destination_pdf, start_page, end_page):
 
 def merge_files(source_file, target_file, source_file_range, target_file_range, merge_at_page):
     source_file_pages = extract_desired_page(
-        PdfReader(source_file), source_file_range[0], source_file_range[1])
+        PdfReader(source_file), source_file_range[0]-1, source_file_range[1])
     target_file_pages = extract_desired_page(
-        PdfReader(target_file), target_file_range[0], target_file_range[1])
-    target_file_writer = PdfWriter(target_file);    
+        PdfReader(target_file), target_file_range[0]-1, target_file_range[1])
+    target_file_writer = PdfWriter(target_file)
     for index, target_page in enumerate(target_file_pages):
-        if index == merge_at_page: 
+        actual_page_num = index+1
+        target_file_writer.add_page(target_page)
+        if actual_page_num == merge_at_page:
             for source_page in source_file_pages:
                 target_file_writer.add_page(source_page)
-        else:
-            target_file_writer.add_page(target_page)
     with open(target_file_writer.fileobj, 'wb') as output_file:
         target_file_writer.write(output_file)
 
@@ -42,11 +42,12 @@ def initialise_files():
 
     # generate s1 with 50 pgs
     copy_pages('gulliverstravels00swif.pdf',
-               'source_files/s1.pdf', 14, 64)
+               'source_files/s1.pdf', 24, 74)
 
     # generate s2 with 40 pgs
     copy_pages('gulliverstravels00swif.pdf',
-               'source_files/s2.pdf', 14, 54)
+               'source_files/s2.pdf', 74, 114)
+
 
 def copy_pages_in_middle(source_file, destination_file, pages_to_copy):
     # TODO: Add implimentation
