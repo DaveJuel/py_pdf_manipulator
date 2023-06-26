@@ -56,8 +56,8 @@ def copy_pages_in_middle(source_file, destination_file, pages_to_copy):
 
 def run_app():
     initialise_files()
-    merge_files('source_files/s1.pdf',
-                'destination_files/tg.pdf', [2, 6], [1, 10], 5)
+    merge_files('source_files/s2.pdf',
+                'destination_files/tg.pdf', [3, 8], [1, 10], 5)
 
 
 run_app()
