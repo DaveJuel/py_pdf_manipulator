@@ -1,4 +1,14 @@
 from PyPDF2 import PdfReader, PdfWriter
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+target_file = os.getenv('TARGET_FILE')
+source_1 = os.getenv('SOURCE_1')
+source_2 = os.getenv('SOURCE_2')
+reference_file = os.getenv('REFERENCE_FILE')
 
 
 def extract_desired_page(source_pdf: PdfReader, start_page: int, end_page: int) -> list:
@@ -120,23 +130,23 @@ def merge_files(source_file: str, target_file: str, source_file_merge_range: lis
 def initialise_files(sample_file):
     # generate tg with 10 pgs
     copy_pages(sample_file,
-               'destination_files/tg.pdf', 14, 24)
+               target_file, 14, 24)
 
     # generate s1 with 50 pgs
     copy_pages(sample_file,
-               'source_files/s1.pdf', 24, 74)
+               source_1, 24, 74)
 
     # generate s2 with 40 pgs
     copy_pages(sample_file,
-               'source_files/s2.pdf', 74, 114)
+               source_2, 74, 114)
 
 
 def run_app():
-    initialise_files('gulliverstravels00swif.pdf')
-    merge_files('source_files/s1.pdf',
-                'destination_files/tg.pdf', [2, 6], 5, True)
-    merge_files('source_files/s2.pdf',
-                'destination_files/tg.pdf', [3, 8], 8, False)
+    initialise_files(reference_file)
+    merge_files(source_1,
+                target_file, [2, 6], 5, True)
+    merge_files(source_2,
+                target_file, [3, 8], 8, False)
 
 
 run_app()
