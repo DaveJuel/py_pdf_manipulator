@@ -5,10 +5,24 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
-target_file = os.getenv('TARGET_FILE')
-source_1 = os.getenv('SOURCE_1')
-source_2 = os.getenv('SOURCE_2')
-reference_file = os.getenv('REFERENCE_FILE')
+target_file: str = os.getenv('TARGET_FILE')
+
+# source 1 details
+source_1 = str(os.getenv('SOURCE_1'))
+source_1_merge_after_page = int(os.getenv('SOURCE_1_MERGE_AFTER_PAGE'))
+source_1_start_page = int(os.getenv('SOURCE_1_START_PAGE'))
+source_1_end_page = int(os.getenv('SOURCE_1_END_PAGE'))
+source_1_clean_after = bool(os.getenv('SOURCE_1_CLEAN_AFTER'))
+
+# source 2 details
+source_2: str = os.getenv('SOURCE_2')
+source_2_merge_after_page = int(os.getenv('SOURCE_1_MERGE_AFTER_PAGE'))
+source_2_start_page = int(os.getenv('SOURCE_1_START_PAGE'))
+source_2_end_page = int(os.getenv('SOURCE_1_END_PAGE'))
+source_2_clean_after = bool(os.getenv('SOURCE_1_CLEAN_AFTER'))
+
+# file used as reference to generate tg, s1 and s2
+reference_file: str = os.getenv('REFERENCE_FILE')
 
 
 def extract_desired_page(source_pdf: PdfReader, start_page: int, end_page: int) -> list:
@@ -144,9 +158,9 @@ def initialise_files(sample_file):
 def run_app():
     initialise_files(reference_file)
     merge_files(source_1,
-                target_file, [2, 6], 5, True)
+                target_file, [source_1_start_page, source_1_end_page], source_1_merge_after_page, source_1_clean_after)
     merge_files(source_2,
-                target_file, [3, 8], 8, False)
+                target_file, [source_2_start_page, source_2_end_page], source_2_merge_after_page, source_2_clean_after)
 
 
 run_app()
