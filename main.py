@@ -1,5 +1,3 @@
-from tokenize import String
-from xmlrpc.client import boolean
 from PyPDF2 import PdfReader, PdfWriter
 
 
