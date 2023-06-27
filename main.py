@@ -1,7 +1,20 @@
+from tokenize import String
+from xmlrpc.client import boolean
 from PyPDF2 import PdfReader, PdfWriter
 
 
-def extract_desired_page(source_pdf, start_page, end_page):
+def extract_desired_page(source_pdf: PdfReader, start_page: int, end_page: int) -> list:
+    """
+    Extracts desired pages from source pdf into list
+
+    Args:
+        source_pdf (PdfReader): The PdfReader object.
+        start_page (int): Number of the page to start from.
+        end_page (int): Number of the page to end at.
+
+    Returns:
+        Pages[]: List of pages in the start_page and end_page range.
+    """
     pages = []
     for page_number in range(start_page, end_page):
         source_page = source_pdf.pages[page_number]
@@ -9,19 +22,48 @@ def extract_desired_page(source_pdf, start_page, end_page):
     return pages
 
 
-def extract_all_pages(source_pdf):
+def extract_all_pages(source_pdf: PdfReader) -> list:
+    """
+    Extracts all pages from source pdf into list
+
+    Args:
+        source_pdf (PdfReader): The PdfReader object.
+
+    Returns:
+        Pages[]: List of all pages.
+    """
     pages = []
     for page in source_pdf.pages:
         pages.append(page)
     return pages
 
 
-def write_file(file_writer):
+def write_file(file_writer: PdfWriter) -> None:
+    """
+    Saves changes on PDF file
+
+    Args: 
+        file_writer (PdfWriter): PdfWriter object
+
+    Returns:
+        None
+    """
     with open(file_writer.fileobj, 'wb') as output_file:
         file_writer.write(output_file)
 
 
-def copy_pages(source_pdf, destination_pdf, start_page, end_page):
+def copy_pages(source_pdf: str, destination_pdf: str, start_page: int, end_page: int) -> None:
+    """
+    Copies desired pages from source pdf to destination pdf
+
+    Args:
+        source_pdf (str): Source pdf local filename
+        destination_pdf (string): Source pdf local filename
+        start_page (int): Page to start from copying
+        end_page (int): Page to end at copying
+    Returns:
+        None
+    """
     destination_pages = extract_desired_page(
         PdfReader(source_pdf), start_page, end_page)
     destination_pdf = PdfWriter(destination_pdf)
@@ -30,7 +72,16 @@ def copy_pages(source_pdf, destination_pdf, start_page, end_page):
     write_file(destination_pdf)
 
 
-def remove_pages_from_source(source_file, page_range_to_remove):
+def remove_pages_from_source(source_file: str, page_range_to_remove: list[int, int]) -> None:
+    """
+    Removes desired pages from the source file
+    Args:
+        source_file (str):  Source pdf local filename
+        page_range_to_remove list[int, int]: Array with 2 indexes, where index: 0 -> start page and 1 -> end page
+
+    Returns:
+        None
+    """
     source_file_reader = PdfReader(source_file)
     source_pages = extract_all_pages(source_file_reader)
     new_source_pdf = PdfWriter(source_file)
@@ -40,7 +91,18 @@ def remove_pages_from_source(source_file, page_range_to_remove):
     write_file(new_source_pdf)
 
 
-def merge_files(source_file, target_file, source_file_merge_range, merge_at_page, clean_up_source):
+def merge_files(source_file: str, target_file: str, source_file_merge_range: list[int, int], merge_at_page: int, clean_up_source: bool) -> None:
+    """
+    Copies desired pages from source_file to the target_file
+    Args:
+        source_file (str): Source pdf local filename
+        target_file (str): Target pdf local filename
+        source_file_merge_range list[int, int]: Array with 2 indexes, where index: 0 -> start page and 1 -> end page
+        merge_at_page (int): The number of the page after which copied pages will be added. 
+        clean_up_source (bool): True for cut and false for copying the pages
+    Returns:
+        None
+    """
     source_file_pages = extract_desired_page(
         PdfReader(source_file), source_file_merge_range[0]-1, source_file_merge_range[1])
     target_file_pages = extract_all_pages(
@@ -77,5 +139,6 @@ def run_app():
                 'destination_files/tg.pdf', [2, 6], 5, True)
     merge_files('source_files/s2.pdf',
                 'destination_files/tg.pdf', [3, 8], 8, False)
+
 
 run_app()
